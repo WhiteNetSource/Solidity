@@ -26,7 +26,7 @@ contract Voting {
         P_Status status ; // 투표 상태
 
     }
-    
+    //
     struct Voter {
 
         string name ;
