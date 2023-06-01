@@ -262,8 +262,58 @@ contract Q40 {
 
     function setNum( uint[] memory _numbers ) public {
         numbers =_numbers ;
+    
+
+    for( uint i = 0 ; i < numbers.length ; i ++ ) { //i는 기준점j는 비교값 이전i보면 이미완성된 격을 보는 것 그러므로 다시 작업시 에러 발생 함.
+        for( uint j = i + 1 ; j < numbers.length ; j ++ ) { //여기 미르띤 ★ 
+            if(numbers[i] < numbers[j]) {
+                (numbers[i] , numbers[j]) = (numbers[j] , numbers[i]) ;
+            }
+        }
+    }
+    }
+    
+    //1,2,3,4,5 / 2
+    //0,1,2,3,4,5,6,7 (Index), lenght = 8 ;
+    //1,2,3,4,5,6,7,8
+    function getNumbers() public view returns( uint[] memory ) {
+        
+        
+        //홀수일때 실행!
+        if( numbers.length % 2 == 1 ) {
+            uint[] memory newArr = new uint[](1) ;//배열의 길이를 (1) //newArr = [0]
+            newArr[0] = numbers[ numbers.length / 2 ];
+            return newArr;
+
+        //짝수일때 실행!    
+        } else { 
+            uint[] memory newArr = new uint[](2) ;
+            newArr[0] = numbers[  numbers.length / 2 + 1] ;
+            newArr[1] = numbers[ numbers.length / 2 ] ;    
+            return newArr;
+        }                                     
     }
 
-}
+} 
 
+// [i,j]
+//     [0,1]
+//     [0,2]
+//     [0,3]
+//     [0,4]
+//     [0,5]
+
+//     [1,2]
+//     [1,3]
+//     [1,4]
+//     [1,5]
+
+//     [2,3]
+//     [2,4]
+//     [2,5]
+
+//     [3,4]
+//     [3,5]
+
+//     [4,5]
 

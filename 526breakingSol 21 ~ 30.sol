@@ -203,18 +203,17 @@ contract Q29 {
 
 contract Q30 {
 	function sorting(uint[] memory numbers) public pure returns(uint[] memory) {
-        for(uint i=0;i<numbers.length-1;i++) {
-            for(uint j=i+1; j<numbers.length ;j++) {
+        for(uint i=0;i<numbers.length;i++) {         
+            for(uint j=i+1; j<numbers.length ;j++) {     
                 if(numbers[i] < numbers[j]) {
                     (numbers[i], numbers[j]) = (numbers[j], numbers[i]);
                 }
             }
-        }
+        } 
         return numbers;
     }
     
 }
 
-    
 
 
