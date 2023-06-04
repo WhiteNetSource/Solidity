@@ -50,7 +50,7 @@ contract VoteProject {
     function pushUser( string calldata _name) public {
         ( user[ msg.sender ].name , user[ msg.sender ].addr  )=  ( _name, msg.sender ) ;
         userCount ++ ;
-    }
+    }//
 
 
 
