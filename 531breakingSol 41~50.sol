@@ -4,9 +4,9 @@
 //  (길이가 4가 되면 자동으로 초기화하는 기능은 굳이 구현하지 않아도 됩니다.)
 
 contract Q41 {
-    uint[3] numbers;
+    uint[4] numbers;
 
-    function setNum( uint[3] memory _n ) public {
+    function setNum( uint[4] memory _n ) public {
         numbers = _n ;
     }
 
@@ -14,6 +14,26 @@ contract Q41 {
         //numbers = [0,0,0] ;
         delete numbers ;
     }
+}
+
+
+contract Q41_1 {
+    uint[4] public a ;
+    uint  public count  ;
+
+    function pushA( uint _a ) public {
+        a[ count++ ] = _a ;
+    } // a의 몇번째에 넣어달하는겨 count++ 자동으로 카운트 되면서 1234 넣어줌
+
+}
+
+contract Q41_2 {
+    uint[ 4 ] public a ;
+
+    function pushA( uint _slot , uint _number ) public {
+        a[ _slot-1 ] = _number ;
+    }
+
 }
 
 // 이름과 번호 그리고 지갑주소를 가진 '고객'이라는 구조체를 선언하세요.
@@ -28,7 +48,45 @@ contract Q42 {
         address addr ;
     }
 
-    function createUser( string _name ; uint _number ; )
+    User[] users ;
 
+    function createUser1( string memory _name , uint _number , address _addr ) public {
+        bytes memory name = bytes(_name) ;
+        if(  name.length >= 5  ) {
+            users.push( User( _name , _number , _addr ) ) ;
+        }
+    }
+
+    function createUser( string memory _name , uint _number , address _addr ) public { 
+        require( bytes( _name ).length >= 5 , "hho" ) ;
+            users.push( User( _name , _number , _addr ) ) ;    
+    } 
+
+
+      function createUser2( string memory _name , uint _number , address _addr ) public {     
+        if(  bytes(_name).length >= 5  ) {
+            users.push( User( _name , _number , _addr ) ) ;
+        }
+    }
+
+    function getUser() public view returns( User[] memory ) {
+        return users ;
+    }
+
+    modifier lengthCheck( string memory _name ) {
+        require( bytes( _name ).length >= 5 ) ;
+        _ ;
+    }
+    function setUser( string calldata _name , uint _number ) public lengthCheck( _name ) {
+        users.push( User( _name , _number , msg.sender )) ;
+    }
+
+    function reset() public {
+        delete users;
+    }
 
 }
+
+
+
+
