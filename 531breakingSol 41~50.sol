@@ -15,3 +15,20 @@ contract Q41 {
         delete numbers ;
     }
 }
+
+// 이름과 번호 그리고 지갑주소를 가진 '고객'이라는 구조체를 선언하세요.
+// 새로운 고객 정보를 만들 수 있는 함수도 구현하되
+// 이름의 글자가 최소 5글자가 되게 설정하세요.
+
+contract Q42 {
+
+    struct User {
+        string name ;
+        uint number ;
+        address addr ;
+    }
+
+    function createUser( string _name ; uint _number ; )
+
+
+}
