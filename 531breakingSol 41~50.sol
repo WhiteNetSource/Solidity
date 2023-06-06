@@ -126,9 +126,37 @@ contract Q43 {
     }
 
     //종이에 글 적음 참고하길...
-
 }
 
+// string만 들어가는 array를 만들되, 
+// 4글자 이상인 문자열만 들어갈 수 있게 구현하세요.
 
+contract Q44 {
+    string[] OnlyString ;
 
+    function onlyString4Letter( string memory _string ) public {
+        require( bytes( _string ).length >=4 ) ;
+        OnlyString.push( _string ) ;
+    }
+}
+
+//1. 숫자만 들어가는 array를 만들되, 100이하의 숫자만 들어갈 수 있게 구현하세요.
+
+contract Q45 {
+    uint[] OnlyNumber ;
+    function onlyNumberNumber100( uint _number ) public {
+        require( _number <= 100 ) ;
+        OnlyNumber.push( _number ) ;
+    } 
+}
+
+// 1. 3의 배수이거나 10의 배수이면서 50보다 작은 수만 들어갈 수 있는 array를 구현하세요.
+    
+// (예 : 15 -> 가능, 3의 배수 // 40 -> 가능, 
+// 10의 배수이면서 50보다 작음 // 66 -> 가능,
+//  3의 배수 // 70 -> 불가능 10의 배수이지만 50보다 큼)
+
+contract Q46 {
+    
+}
 
