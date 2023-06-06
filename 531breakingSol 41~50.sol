@@ -87,6 +87,48 @@ contract Q42 {
 
 }
 
+// 1. 은행의 역할을 하는 contract를 만드려고 합니다. 
+// 별도의 고객 등록 과정은 없습니다.
+//  해당 contract에 ether를 예치할 수 있는 기능을 만드세요.
+//   또한, 자신이 현재 얼마를 예치했는지도 볼 수 있는 함수 
+//   그리고 자신이 예치한만큼의 ether를 인출할 수 있는 기능을 구현하세요.
+    
+//     힌트 : mapping을 꼭 이용하세요.
+
+contract Q43 {
+
+    mapping( address => uint ) balance ;
+
+    // function deposit( uint _amount ) public {
+    //     require( _amount[ msg.sender ] >= 0 ) ;
+    // 내가 이렇게 작성한 이유는  그 금액은 누른사람이 들고 있어야하는 금액이라 이렇게적음
+    // 생각을 고침 여기 넣은 사람은 당연히 값을 넣는 특정인 일테고 (_amount <- 값이 바로들어감)
+    // 잔고는 특전 누구를 가리켜야 하는 대상 즉 키이기에 확실히 해줘야하므로 메센을 붙인다.
+    //     balance += balance[_amount] ;
+    // }
+
+    function de() public payable {}
+
+    function deposit( uint _amount ) public {
+        require( _amount > 0 ) ;
+        balance[msg.sender] += _amount ;
+    }
+
+    function checkBalance() public view returns( uint ) {
+        return balance[ msg.sender ] ;
+    }
+
+    function withdraw( uint _amount ) public {
+        require( balance[ msg.sender ] > 0 , "You dont have enough balance." ) ;
+        balance[ msg.sender ] = balance[ msg.sender ] - _amount ;
+        // balance[ msg.sender ] -= _amount ;
+        
+    }
+
+    //종이에 글 적음 참고하길...
+
+}
+
 
 
 
