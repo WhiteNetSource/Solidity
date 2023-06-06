@@ -135,7 +135,7 @@ contract Q44 {
     string[] OnlyString ;
 
     function onlyString4Letter( string memory _string ) public {
-        require( bytes( _string ).length >=4 ) ;
+        require( bytes( _string ).length >=  4 ) ;
         OnlyString.push( _string ) ;
     }
 }
@@ -152,11 +152,25 @@ contract Q45 {
 
 // 1. 3의 배수이거나 10의 배수이면서 50보다 작은 수만 들어갈 수 있는 array를 구현하세요.
     
-// (예 : 15 -> 가능, 3의 배수 // 40 -> 가능, 
-// 10의 배수이면서 50보다 작음 // 66 -> 가능,
-//  3의 배수 // 70 -> 불가능 10의 배수이지만 50보다 큼)
+
 
 contract Q46 {
-    
+
+    uint[] public vaildNumbers ;
+
+    function Num( uint _number ) public {
+        if( (_number % 3 == 0 || _number % 10 == 0) && _number  < 50 ) {
+            return vaildNumbers.push(_number) ; 
+            //if문은 답이 아니면 0을 집어넣음 그러니깐 계약이 성립됨
+        }
+    }
+
+
+    function pushNumbers(uint _a) public {
+        require(_a%3==0 || _a%10==0 && _a<50);
+        vaildNumbers.push(_a);
+    }
+
+
 }
 
