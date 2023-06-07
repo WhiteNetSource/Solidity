@@ -170,7 +170,75 @@ contract Q46 {
         require(_a%3==0 || _a%10==0 && _a<50);
         vaildNumbers.push(_a);
     }
+}
 
+
+// 배포와 함께 배포자가 owner로 설정되게 하세요.
+//  owner를 바꿀 수 있는 함수도 구현하되 그 함수는 owner만 실행할 수 있게 해주세요.
+
+
+
+contract Q47 {
+    address owner ;
+
+    constructor() {
+        owner = msg.sender ;
+    }
+
+    modifier onlyOwner() {
+        require( owner == msg.sender ) ;
+        _;
+    }
+
+    function changeOwner( address _newOwner ) public onlyOwner {
+        owner = _newOwner ;
+    }
+}
+
+// A라는 contract에는 2개의 숫자를 더해주는 함수를 구현하세요. 
+// B라고 하는 contract를 따로 만든 후에 A의 더하기 함수를 사용하는 코드를 구현하세요.
+
+
+
+contract Q48_A {
+
+    function add( uint _a , uint _b ) public pure returns( uint ) {
+        return _a + _b ;
+    }
+}
+
+contract Q48_B {
+    Q48_A a;
+
+    function addFromA( uint _c , uint _d ) public view returns( uint ) {
+        return a.add( _c , _d ) ;
+    }
 
 }
+
+// 1. 긴 숫자를 넣었을 때, 마지막 3개의 숫자만 반환하는 함수를 구현하세요.
+    
+//     예) 459273 → 273 // 492871 → 871 // 92218 → 218
+
+contract Q49 {
+    function returnLastThreeNumbers( uint _number ) public pure returns( uint ) {
+        return _number%1000 ; //공 3개치 반환해줌 /나머지 반환
+    }
+}
+
+// 1. 숫자 3개가 부여되면 그 3개의 숫자를 이어붙여서 반환하는 함수를 구현하세요. 
+    
+//     예) 3,1,6 → 316 // 1,9,3 → 193 // 0,1,5 → 15 
+    
+//     응용 문제 : 3개 아닌 n개의 숫자 이어붙이기
+
+contract Q50 {
+    function putTogether( uint _a , uint _b , uint _c ) public pure returns( uint ) {
+        return (_a *100 + _b* 10 + _c ) ;
+    }
+}
+
+
+    
+
 
