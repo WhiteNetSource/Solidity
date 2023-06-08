@@ -18,4 +18,85 @@ contract Q51 {
     }
 
 }
- 
+
+// 자동으로 아이디를 만들어주는 함수를 구현하세요.
+// 이름, 생일, 지갑주소를 기반으로 만든 
+// 해시값의 첫 10바이트를 추출하여 아이디로 만드시오.
+contract Q52 {
+    struct ID{
+        string name ;
+        uint birthday ;
+        address addr ;
+        bytes10 id ;
+    }
+
+    ID i ;
+
+    function setID( string calldata _name , uint _birth ) public {
+        ( i.name , i.birthday , i.addr ) = ( _name , _birth, msg.sender ) ;
+        i.id = bytes10(keccak256(abi.encodePacked( _name , _birth , msg.sender ))) ;
+    }
+
+    function getID() public view returns( bytes10 ) {
+        return i.id ;
+    }
+
+ }
+
+//  1. 시중에는 A,B,C,D,E 5개의 은행이 있습니다. 
+//  각 은행에 고객들은 마음대로 입금하고 인출할 수 있습니다. 
+//  각 은행에 예치된 금액 확인, 입금과 인출할 수 있는 기능을 구현하세요.
+    
+//     힌트 : 이중 mapping을 꼭 이용하세요.
+
+contract Q53 {
+    mapping( string => mapping( address => uint )) balances ;
+    
+    function deposit( string memory _bank , uint _balance ) public {
+        balances[ _bank ][ msg.sender ] = _balance ; 
+    }
+
+    function check( string memory _bank ) public view returns( uint ) {
+        return balances[ _bank ][ msg.sender ] ;
+    }
+
+    function withdraw( string memory _bank , uint _balances ) public {
+        balances[ _bank ][ msg.sender ] -= _balances ;
+    }
+}
+
+// 1. 기부받는 플랫폼을 만드세요. 
+// 가장 많이 기부하는 사람을 나타내는 변수와
+//  그 변수를 지속적으로 바꿔주는 함수를 만드세요.
+    
+//     힌트 : 굳이 mapping을 만들 필요는 없습니다.
+
+contract Q54 {
+    address honerable_doner ; // 기부자의 주소를 저장하는 변수
+    uint donated_amount ;  // 기부된 금액을 저장하는 변수
+
+    function donation() public payable {
+        if( msg.value > donated_amount ) {
+            donated_amount = msg.value ;  // 기부된 금액 업데이트
+            honerable_doner = msg.sender ;  // 기부자 주소 업데이트
+        }
+    }
+
+}
+
+// 배포와 함께 owner를 설정하고 owner를 
+// 다른 주소로 바꾸는 것은 오직 owner 스스로만 할 수 있게 하십시오.
+
+contract Q55 {
+    address owner;    // 소유자(owner)의 주소를 저장하는 변수
+
+    constructor() {
+        owner = msg.sender;    // 배포 시 소유자(owner) 설정
+    }
+
+    // 소유자 변경 함수 - 오직 소유자(owner) 스스로만 다른 주소로 변경할 수 있도록 제한
+    function ownerChange(address _newOwner) public {
+        require(msg.sender == owner, "Only the owner can change the owner address");    // 호출자가 소유자(owner)인지 확인
+        owner = _newOwner;    // 소유자(owner) 변경
+    }
+}
