@@ -100,3 +100,46 @@ contract Q55 {
         owner = _newOwner;    // 소유자(owner) 변경
     }
 }
+
+//위 문제의 확장버전입니다. owner와 sub_owner를 설정하고 owner를 바꾸기 위해서는 둘의 동의가 모두 필요하게 구현하세요.
+
+contract Q56 {
+
+    address owner ;
+    address sub_owner ;
+
+    constructor( address _sub ) {
+        owner = msg.sender ;
+        sub_owner = _sub;
+    }
+
+    uint[2] agreed ;
+
+     modifier bothAgreed() {
+        require(agreed[0]*agreed[1] == 1);
+        _;
+    }
+
+    function changeOwner( address _newOwner ) public {
+        owner = _newOwner ;
+    }
+
+    function agree_Owner( bool _agree ) public {
+        require( owner == msg.sender ) ;
+        if( _agree == true ){
+            agreed[0] = 1 ;
+        } else {
+            agreed[0] =0 ;
+        }
+    }
+
+    function agree_SubOwner( bool _agree ) public {
+        require( msg.sender == sub_owner ) ;
+        if( _agree == true ) {
+            agreed[1] = 1;
+        } else {
+            agreed[1] =0 ;
+        }
+    }
+     
+}
