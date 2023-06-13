@@ -2,11 +2,12 @@
 pragma solidity >=0.8.2 <0.9.0;
 
 contract VC {
+    
     struct Poll {
         uint number;
         string title;
         string context;
-        address by;
+        address by; //29번과 비교
         uint time;
         uint pros;
         uint cons;
@@ -25,7 +26,7 @@ contract VC {
 
     struct User {
         string email;
-        address addr;
+        address addr; //10번과 비교
         Poll userPoll;
         VotingStatus votingStatus;
     }
@@ -94,7 +95,7 @@ contract VC {
         // electiveCount++;
     }
 
-    // 1번_투표 생성 안에 집어 넣는 함수 (if문에 위치함)
+    /// 1번_투표 생성 안에 집어 넣는 함수 (if문에 위치함)
     function set_AgendaVoting(string memory _title, string memory _context, uint _endTime, address _by, address _addr, uint _number, string memory _email ) internal {
         if (users[msg.sender].votingStatus == VotingStatus.pro) {
         users[msg.sender].userPoll.pros++;
