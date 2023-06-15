@@ -57,39 +57,44 @@ contract VC {
         
     }
 
+    //3중 맵핑쓰고 싶지만 뽑아 올 수 있는 데이터 선택을 위해 이렇게 작성 함
     mapping( address => User) users ;
     mapping( string => address) emailToUserBytes ;
 
+    mapping( address => Poll ) UserHasPoll ;
+
+    modifier setVoting( address _addr, string memory _email, string memory _title, string memory _context, uint _endTime) {
+        require(keccak256(bytes(users[_addr].email)) == keccak256(bytes(_email)), "Permission denied"); // <-이메일이 있는지 체크 후 존재하는 이메일로 투표를 생성했는지 여부
+        require(bytes(_title).length > 0, "Title is empty.");
+        require(bytes(_context).length > 0, "Context is empty.");
+        require(_endTime > 0, "Time is empty.");
+        _;
+    }
      
 
     //1.   투표만들기 
-    function createPoll(string memory _title, string memory _context, uint _endTime, address _by, address _addr , uint _number , string memory _email , voteType _type ) public  {
-    require(keccak256(bytes(users[_addr].email)) == keccak256(bytes(_email)), "Permission denied"); // <- 주소와 이메일이 있는지 체크 후 존재하는 이메일로 투표를 생성했는지 여부
-    require( bytes(_title ) > 0 , "Title is empty.") ;
-    require( bytes( _context ) > 0 , "Context is empty.") ;
-    require( _endTime > 0 , "Time is empty.") ;
-        // 투표 생성 로직 추가
-        //title
-        //context
-        //endtime
-        //by 누구에게서 만들어졌는지
+    function createPoll(  voteType _type ) public setVoting( msg.sender ,  users[ msg.sender ].email , UserHasPoll[ msg.sender ].title , UserHasPoll[ msg.sender ].context, block.timestamp) {
 
-        //여기 if문 넣어서 0,1번으로 압축 시킬거임( 펑션 끌고 와서 코드 잘 보이게 할거)
+        uint[] electiveCount;
+
         if ( _type == voteType.prosAndCons ) {
-
+            get_electionVoting() ;
         } 
 
         else ( _type == voteType.election ) {
-
+            get_AgendaVoting() ;
+            electiveCount++ ;
         }
         
     }
 
-    function get_electionVoting( ) public {
+
+    function set_electionVoting( string memory _title, string memory _context, uint _endTime, address _by, address _addr , uint _number , string memory _email ) public {
 
     }
 
-    function get_AgendaVoting()public {
+
+    function set_AgendaVoting( string memory _title, string memory _context, uint _endTime, address _by, address _addr , uint _number , string memory _email )public {
 
     }
 

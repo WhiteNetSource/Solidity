@@ -3,117 +3,72 @@ pragma solidity >=0.8.2 <0.9.0;
 
 contract VC {
     
+    
+   
+
     struct Poll {
-        uint number;
+
+        uint number; // pollNumber = generatePollNumber(); //불러올때나 이걸로 불러올거야 이게 아이디값이 디비같이 스트링은 비교하기 어렵지만 넘버는 비교하기 쉽다.
         string title;
         string context;
-        address by; //29번과 비교
-        uint time;
-        uint pros;
-        uint cons;
+        address by;
+        uint time;// ------------------이시간 블록스템프 가지고와서   xtime = time + endtime
+        uint pros; // -> 디비? +1                                    xtime  ==
+        uint cons; // -> 디비? +1 
         bool completed;
-        voteType votetype;
-        string[] elective;
-        uint[] electiveCount;
-        uint endTime;
-        string[] regardingUsers;
+        voteType votetype; // 0 : 찬반 ,  1 : 선출
+        string[] elective; //출마자 ["황재윤", "김영도" , "안재우" ]  => 0,1,2
+        uint[] electiveCount;  // 출마자 각 카운트 // -> 디비? [1,0,0] => 카운트 값 
+        uint endTime; // 추가된 종료 시간
+        string[] regardingUsers; //이메일 권한 확인 -> 이메일 넣어준 사람들만 투표 가능 
+
     }
 
-    enum voteType {
-        prosAndCons,
+     enum voteType { // 찬반 , 선출
+        prosAndcons,
         election
     }
 
-    struct User {
-        string email;
-        address addr; //10번과 비교
-        Poll userPoll;
-        VotingStatus votingStatus;
-    }
-
-     enum VotingStatus {        
-        notVoted, //0
-        pro, //1
-        con //2
-    }
-
-    mapping(address => User) public users;
-    mapping(string => address) public emailToUserBytes;
 
 
-    // * 1번 투표 생성 안에 들어가있음
-    //2.   투표하기
-    //2.1  투표 출력 (내가 권한 가진 것만 나오기 email) => getRegardingUserPolls
-    //2.2  권한이 없으면 리젝트
-    modifier setVoting(address _addr, string memory _email, string memory _title, string memory _context, uint _endTime) {
-        require(keccak256(bytes(users[_addr].email)) == keccak256(bytes(_email)), "Permission denied");
-        require(bytes(_title).length > 0, "Title is empty.");
-        require(bytes(_context).length > 0, "Context is empty.");
-        require(_endTime > 0, "Time is empty.");
-        _;
-    }
+     mapping(uint => mapping (address => uint)) voted; //투표하는 것 
+            // 투표 number   // 누른 사람   // 찬반  : 찬성 0 , 반대 , 1
+            //generatePollNumber         // 선출  : 인덱스 값 재윤 선택시 0 / ["황재윤", "김영도" , "안재우" ]  => 0,1,2
+    
 
-    //1. 투표 생성
-    function createPoll(voteType _type, string memory _title, string memory _context, uint _endTime) public setVoting(msg.sender, users[msg.sender].email, _title, _context, _endTime) {
-        address _addr = msg.sender;
-        string memory _email = users[_addr].email;
 
-        users[_addr].userPoll = Poll(
-            users[_addr].userPoll.number + 1,
-            _title,
-            _context,
-            _addr,
-            block.timestamp,
-            0,
-            0,
-            false,
-            _type,
-            new string[](0),
-            new uint[](0),
-            _endTime,
-            new string[](0)
-        );
 
-        // 0
-        if (_type == voteType.prosAndCons) {
-            set_electionVoting(_title, _context, _endTime, _addr, _addr, users[_addr].userPoll.number, _email );
+    // 투표 생성
+    function makeANewPoll(string calldata _title, string calldata _context, uint _voteType, string[] memory _elective,uint _endTime, string[] memory _regardingUsers) public returns(uint pollNumber) {
+        require(bytes(_title).length > 0, "Title should not be empty");
+        require(bytes(_context).length > 0, "Context should not be empty");
+
+
+        pollNumber = generatePollNumber();
+        uint[] memory _electiveCount = new uint[](_elective.length);
+
+        if(_voteType == 0){ //찬반 나누어 넣기 voteType.prosAndcons || voteType.election
+            polls.push(Poll(pollNumber,_title, _context, msg.sender,block.timestamp, 0, 0, false, voteType.prosAndcons , _elective,_electiveCount, _endTime, _regardingUsers ));
+        }else{
+            polls.push(Poll(pollNumber,_title, _context, msg.sender,block.timestamp, 0, 0, false, voteType.election , _elective,_electiveCount, _endTime, _regardingUsers ));
         } 
-        // 1
-        else if (_type == voteType.election) {
-            set_AgendaVoting(_title, _context, _endTime, _addr, _addr, users[_addr].userPoll.number, _email );
-            
-        }
+
     }
 
-    // 1번_투표 생성 안에 집어 넣는 함수 (if문에 위치함)
-    function set_electionVoting(string memory _title, string memory _context, uint _endTime, address _by, address _addr, uint _number, string memory _email) internal {
-        if (users[msg.sender].votingStatus == VotingStatus.pro) {
-        users[msg.sender].userPoll.pros++;
-        } else if (users[msg.sender].votingStatus == VotingStatus.con) {
-        users[msg.sender].userPoll.cons++;
-        }
-        // electiveCount++;
-    }
 
-    /// 1번_투표 생성 안에 집어 넣는 함수 (if문에 위치함)
-    function set_AgendaVoting(string memory _title, string memory _context, uint _endTime, address _by, address _addr, uint _number, string memory _email ) internal {
-        if (users[msg.sender].votingStatus == VotingStatus.pro) {
-        users[msg.sender].userPoll.pros++;
-        } else if (users[msg.sender].votingStatus == VotingStatus.con) {
-        users[msg.sender].userPoll.cons++;
-        }
-    }
-    
-    function getResult( address _addr, string memory _title ) public view returns( string memory ) {
-        return users[msg.sender].userPoll.title ;
-    }
+string[] memory elective = new string[](3);
+elective[0] = "황재윤";
+elective[1] = "김영도";
+elective[2] = "안재우";
 
-    
+string[] memory regardingUsers = new string[](2);
+regardingUsers[0] = "user1@example.com";
+regardingUsers[1] = "user2@example.com";
 
-    //3.   투표 결과 보기
-    //3.1  내가 만든 투표 리스트 (결과 또는 상태) => getMadeVote
-    //3.2  내가 한 투표 보기 (결과 또는 상태)
-    //4    투표 완료 하기 (시간이 지나면 자동 완료 //   bool completed; -> true)
+uint endTime = block.timestamp + 86400; // 24 hours from now
+
+uint pollNumber = makeANewPoll("투표 제목", "투표 내용", 0, elective, endTime, regardingUsers);
+
 
 
     // 1. 맵핑을 최소화 하기 위해서 리스트로 바꿈 (가스비 감소를 위해)
@@ -127,12 +82,28 @@ contract VC {
     //   문자로 넣을까??? 고민중 / 문자 대조가 어려움 
 
 
-    // mapping(uint => mapping (address => uint)) voted; //투표하는 것 
-    //         // 투표 number   // 누른 사람   // 찬반  : 찬성 0 , 반대 , 1
-    //         //generatePollNumber         // 선출  : 인덱스 값 재윤 선택시 0 / ["황재윤", "김영도" , "안재우" ]  => 0,1,2
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+  
 
 
 
