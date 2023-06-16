@@ -56,18 +56,18 @@ contract VC {
     }
 
 
-string[] memory elective = new string[](3);
-elective[0] = "황재윤";
-elective[1] = "김영도";
-elective[2] = "안재우";
+// string[] memory elective = new string[](3);
+// elective[0] = "황재윤";
+// elective[1] = "김영도";
+// elective[2] = "안재우";
 
-string[] memory regardingUsers = new string[](2);
-regardingUsers[0] = "user1@example.com";
-regardingUsers[1] = "user2@example.com";
+// string[] memory regardingUsers = new string[](2);
+// regardingUsers[0] = "user1@example.com";
+// regardingUsers[1] = "user2@example.com";
 
-uint endTime = block.timestamp + 86400; // 24 hours from now
+// uint endTime = block.timestamp + 86400; // 24 hours from now
 
-uint pollNumber = makeANewPoll("투표 제목", "투표 내용", 0, elective, endTime, regardingUsers);
+// uint pollNumber = makeANewPoll("투표 제목", "투표 내용", 0, elective, endTime, regardingUsers);
 
 
 
